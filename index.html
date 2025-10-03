@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Editor Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with Navigation -->
+        <header class="glass-header">
+            <div class="header-content">
+                <h1 class="app-title">Image Editor Pro</h1>
+                <nav class="module-tabs">
+                    <button class="tab active" data-module="0" id="tab-0">
+                        <span class="tab-icon">📤</span>
+                        <span class="tab-text">Upload</span>
+                    </button>
+                    <button class="tab" data-module="1" id="tab-1" disabled>
+                        <span class="tab-icon">✏️</span>
+                        <span class="tab-text">Sketch</span>
+                    </button>
+                    <button class="tab" data-module="2" id="tab-2" disabled>
+                        <span class="tab-icon">📏</span>
+                        <span class="tab-text">Resize</span>
+                    </button>
+                    <button class="tab" data-module="3" id="tab-3" disabled>
+                        <span class="tab-icon">🎨</span>
+                        <span class="tab-text">Cartoon</span>
+                    </button>
+                    <button class="tab" data-module="4" id="tab-4" disabled>
+                        <span class="tab-icon">🖼️</span>
+                        <span class="tab-text">Remove BG</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <main class="modules-container">
+            <!-- Module 0: Upload Hub -->
+            <div class="module active" id="module-0">
+                <div class="module-content">
+                    <div class="upload-section">
+                        <div class="glass-card upload-card">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <div class="upload-icon">📁</div>
+                                    <h3>Drag & Drop Your Image</h3>
+                                    <p>or click to browse files</p>
+                                    <div class="upload-formats">Supports JPG, PNG, BMP</div>
+                                </div>
+                            </div>
+                            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.bmp" style="display: none;">
+                        </div>
+                        
+                        <div class="image-preview-card glass-card" id="imagePreviewCard" style="display: none;">
+                            <div class="preview-header">
+                                <h3>Image Preview</h3>
+                                <div class="image-info" id="imageInfo"></div>
+                            </div>
+                            <div class="preview-container">
+                                <canvas id="previewCanvas"></canvas>
+                            </div>
+                            <div class="preview-actions">
+                                <button class="glass-button secondary" id="changeImageBtn">Change Image</button>
+                                <button class="glass-button primary" id="downloadBtn" disabled>Download</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modules-grid" id="modulesGrid" style="display: none;">
+                        <div class="module-card glass-card" data-target="1">
+                            <div class="module-icon">✏️</div>
+                            <h3>Sketch Converter</h3>
+                            <p>Transform your image into a pencil sketch with adjustable line intensity</p>
+                        </div>
+                        <div class="module-card glass-card" data-target="2">
+                            <div class="module-icon">📏</div>
+                            <h3>Size Reducer</h3>
+                            <p>Compress and resize images while maintaining quality</p>
+                        </div>
+                        <div class="module-card glass-card" data-target="3">
+                            <div class="module-icon">🎨</div>
+                            <h3>Cartoonifier</h3>
+                            <p>Convert photos into cartoon-style images with color quantization</p>
+                        </div>
+                        <div class="module-card glass-card" data-target="4">
+                            <div class="module-icon">🖼️</div>
+                            <h3>Background Remover</h3>
+                            <p>Remove backgrounds with advanced threshold controls</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 1: Sketch Converter -->
+            <div class="module" id="module-1">
+                <div class="module-content">
+                    <div class="controls-panel glass-card">
+                        <h3>Sketch Controls</h3>
+                        <div class="control-group">
+                            <label>Line Intensity</label>
+                            <input type="range" id="sketchIntensity" min="1" max="10" value="5" class="glass-slider">
+                            <span class="control-value" id="intensityValue">5</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Detail Level</label>
+                            <input type="range" id="sketchDetail" min="1" max="10" value="7" class="glass-slider">
+                            <span class="control-value" id="detailValue">7</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Smoothing</label>
+                            <input type="range" id="sketchSmoothing" min="0" max="5" value="2" class="glass-slider">
+                            <span class="control-value" id="smoothingValue">2</span>
+                        </div>
+                        <div class="control-actions">
+                            <button class="glass-button secondary" id="sketchReset">Reset</button>
+                            <button class="glass-button primary" id="applySketch">Apply Sketch</button>
+                        </div>
+                    </div>
+                    <div class="preview-panel glass-card">
+                        <div class="split-preview">
+                            <div class="preview-side">
+                                <h4>Before</h4>
+                                <canvas id="sketchBefore"></canvas>
+                            </div>
+                            <div class="preview-side">
+                                <h4>After</h4>
+                                <canvas id="sketchAfter"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2: Size Reducer -->
+            <div class="module" id="module-2">
+                <div class="module-content">
+                    <div class="controls-panel glass-card">
+                        <h3>Size Controls</h3>
+                        <div class="size-inputs">
+                            <div class="input-group">
+                                <label>Width</label>
+                                <input type="number" id="resizeWidth" class="glass-input">
+                                <span>px</span>
+                            </div>
+                            <div class="input-group">
+                                <label>Height</label>
+                                <input type="number" id="resizeHeight" class="glass-input">
+                                <span>px</span>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="maintainAspect" checked>
+                                <label for="maintainAspect">Maintain Aspect Ratio</label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Quality</label>
+                            <input type="range" id="resizeQuality" min="10" max="100" value="90" class="glass-slider">
+                            <span class="control-value" id="qualityValue">90%</span>
+                        </div>
+                        <div class="file-size-info" id="fileSizeInfo">
+                            <div class="size-comparison">
+                                <span>Original: <span id="originalSize">-</span></span>
+                                <span>Compressed: <span id="compressedSize">-</span></span>
+                            </div>
+                        </div>
+                        <div class="control-actions">
+                            <button class="glass-button secondary" id="resizeReset">Reset</button>
+                            <button class="glass-button primary" id="applyResize">Apply Resize</button>
+                        </div>
+                    </div>
+                    <div class="preview-panel glass-card">
+                        <div class="split-preview">
+                            <div class="preview-side">
+                                <h4>Before</h4>
+                                <canvas id="resizeBefore"></canvas>
+                            </div>
+                            <div class="preview-side">
+                                <h4>After</h4>
+                                <canvas id="resizeAfter"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3: Cartoonifier -->
+            <div class="module" id="module-3">
+                <div class="module-content">
+                    <div class="controls-panel glass-card">
+                        <h3>Cartoon Controls</h3>
+                        <div class="control-group">
+                            <label>Cartoon Intensity</label>
+                            <input type="range" id="cartoonIntensity" min="1" max="10" value="5" class="glass-slider">
+                            <span class="control-value" id="cartoonIntensityValue">5</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Edge Thickness</label>
+                            <input type="range" id="cartoonEdges" min="1" max="5" value="2" class="glass-slider">
+                            <span class="control-value" id="edgeValue">2</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Color Levels</label>
+                            <input type="range" id="cartoonColors" min="4" max="16" value="8" class="glass-slider">
+                            <span class="control-value" id="colorValue">8</span>
+                        </div>
+                        <div class="control-actions">
+                            <button class="glass-button secondary" id="cartoonReset">Reset</button>
+                            <button class="glass-button primary" id="applyCartoon">Apply Cartoon</button>
+                        </div>
+                    </div>
+                    <div class="preview-panel glass-card">
+                        <div class="split-preview">
+                            <div class="preview-side">
+                                <h4>Before</h4>
+                                <canvas id="cartoonBefore"></canvas>
+                            </div>
+                            <div class="preview-side">
+                                <h4>After</h4>
+                                <canvas id="cartoonAfter"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 4: Background Remover -->
+            <div class="module" id="module-4">
+                <div class="module-content">
+                    <div class="controls-panel glass-card">
+                        <h3>Background Controls</h3>
+                        <div class="control-group">
+                            <label>Threshold</label>
+                            <input type="range" id="bgThreshold" min="10" max="100" value="30" class="glass-slider">
+                            <span class="control-value" id="thresholdValue">30</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Feather Amount</label>
+                            <input type="range" id="bgFeather" min="0" max="10" value="2" class="glass-slider">
+                            <span class="control-value" id="featherValue">2</span>
+                        </div>
+                        <div class="color-picker-group">
+                            <label>Background Color</label>
+                            <div class="color-picker-container">
+                                <input type="color" id="bgColorPicker" value="#ffffff" class="glass-color-picker">
+                                <button class="glass-button secondary" id="pickColorBtn">Pick from Image</button>
+                            </div>
+                        </div>
+                        <div class="control-actions">
+                            <button class="glass-button secondary" id="bgReset">Reset</button>
+                            <button class="glass-button primary" id="applyBgRemoval">Remove Background</button>
+                        </div>
+                    </div>
+                    <div class="preview-panel glass-card">
+                        <div class="split-preview">
+                            <div class="preview-side">
+                                <h4>Before</h4>
+                                <canvas id="bgBefore"></canvas>
+                            </div>
+                            <div class="preview-side transparency-preview">
+                                <h4>After</h4>
+                                <canvas id="bgAfter"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content glass-card">
+                <div class="loading-spinner"></div>
+                <div class="loading-text" id="loadingText">Processing...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
